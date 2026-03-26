@@ -37,7 +37,7 @@ export function ImageUpload({ value, onChange, label }: ImageUploadProps) {
           `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
           { method: "POST", body: formData }
         );
-        const data = await res.json();
+        const data = (await res.json()) as { secure_url: string };
         onChange(data.secure_url);
       } catch {
         console.error("Upload failed");
@@ -158,7 +158,7 @@ export function MultiImageUpload({
         `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
         { method: "POST", body: formData }
       );
-      const data = await res.json();
+      const data = (await res.json()) as { secure_url: string };
       onChange([...value, data.secure_url]);
     } catch {
       console.error("Upload failed");
