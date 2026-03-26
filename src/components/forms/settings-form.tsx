@@ -26,10 +26,27 @@ export function SettingsForm({ settings }: SettingsFormProps) {
     formState: { errors, isSubmitting },
   } = useForm<SettingsFormData>({
     resolver: zodResolver(settingsSchema),
-    defaultValues: settings || {
-      artistName: "Gustavo Bar Valenzuela",
-      siteTitle: "Gustavo Bar Valenzuela — Fine Art",
-    },
+    defaultValues: settings
+      ? {
+          artistName: settings.artistName,
+          siteTitle: settings.siteTitle,
+          tagline: settings.tagline ?? undefined,
+          aboutSnippet: settings.aboutSnippet ?? undefined,
+          contactEmail: settings.contactEmail ?? undefined,
+          phone: settings.phone ?? undefined,
+          address: settings.address ?? undefined,
+          instagram: settings.instagram ?? undefined,
+          facebook: settings.facebook ?? undefined,
+          twitter: settings.twitter ?? undefined,
+          youtube: settings.youtube ?? undefined,
+          linkedin: settings.linkedin ?? undefined,
+          logoUrl: settings.logoUrl ?? undefined,
+          faviconUrl: settings.faviconUrl ?? undefined,
+        }
+      : {
+          artistName: "Gustavo Bar Valenzuela",
+          siteTitle: "Gustavo Bar Valenzuela — Fine Art",
+        },
   });
 
   async function onSubmit(data: SettingsFormData) {

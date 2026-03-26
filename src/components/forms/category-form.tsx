@@ -29,7 +29,16 @@ export function CategoryForm({ category, onSuccess }: CategoryFormProps) {
     formState: { errors, isSubmitting },
   } = useForm<CategoryFormData>({
     resolver: zodResolver(categorySchema),
-    defaultValues: category || { type: "GENERAL", sortOrder: 0 },
+    defaultValues: category
+      ? {
+          name: category.name,
+          slug: category.slug,
+          description: category.description ?? undefined,
+          coverImageUrl: category.coverImageUrl ?? undefined,
+          type: category.type,
+          sortOrder: category.sortOrder,
+        }
+      : { type: "GENERAL" as const, sortOrder: 0 },
   });
 
   async function onSubmit(data: CategoryFormData) {

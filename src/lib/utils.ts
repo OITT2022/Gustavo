@@ -32,6 +32,15 @@ export function truncate(str: string, length: number): string {
   return str.slice(0, length) + "...";
 }
 
+/** Convert all null values in an object to undefined (for React Hook Form compatibility with Prisma) */
+export function nullsToUndefined<T extends Record<string, unknown>>(obj: T): { [K in keyof T]: Exclude<T[K], null> | undefined } {
+  const result = {} as Record<string, unknown>;
+  for (const [key, value] of Object.entries(obj)) {
+    result[key] = value === null ? undefined : value;
+  }
+  return result as { [K in keyof T]: Exclude<T[K], null> | undefined };
+}
+
 export function getDimensionsDisplay(artwork: {
   width?: number | null;
   height?: number | null;
