@@ -1,6 +1,6 @@
 export const dynamic = "force-dynamic";
 
-import { prisma } from "@/lib/prisma";
+import { getDb } from "@/lib/prisma";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { HeroSection } from "@/components/home/hero-section";
@@ -10,12 +10,12 @@ import Image from "next/image";
 
 export default async function HomePage() {
   const [featured, categories] = await Promise.all([
-    prisma.artwork.findMany({
+    (await getDb()).artwork.findMany({
       where: { featured: true, status: { not: "HIDDEN" } },
       orderBy: { sortOrder: "asc" },
       take: 6,
     }),
-    prisma.category.findMany({
+    (await getDb()).category.findMany({
       orderBy: { sortOrder: "asc" },
       take: 4,
       include: { _count: { select: { artworks: true } } },

@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { prisma } from "@/lib/prisma";
+import { getDb } from "@/lib/prisma";
 import { artworkSchema } from "@/validations/artwork";
 import { auth } from "@/lib/auth";
 import type { ActionResult, Artwork } from "@/types";
@@ -20,7 +20,7 @@ export async function createArtwork(data: unknown): Promise<ActionResult<Artwork
   }
 
   const { galleryImages, tags, ...rest } = parsed.data;
-  const artwork = await prisma.artwork.create({
+  const artwork = await (await getDb()).artwork.create({
     data: {
       ...rest,
       galleryImages: JSON.stringify(galleryImages),
@@ -46,7 +46,7 @@ export async function updateArtwork(
   }
 
   const { galleryImages, tags, ...rest } = parsed.data;
-  const artwork = await prisma.artwork.update({
+  const artwork = await (await getDb()).artwork.update({
     where: { id },
     data: {
       ...rest,
@@ -64,10 +64,10 @@ export async function updateArtwork(
 
 export async function deleteArtwork(id: string): Promise<ActionResult> {
   await requireAuth();
-  const artwork = await prisma.artwork.findUnique({ where: { id } });
+  const artwork = await (await getDb()).artwork.findUnique({ where: { id } });
   if (!artwork) return { success: false, error: "Artwork not found" };
 
-  await prisma.artwork.delete({ where: { id } });
+  await (await getDb()).artwork.delete({ where: { id } });
 
   revalidatePath("/");
   revalidatePath("/gallery");
@@ -77,10 +77,10 @@ export async function deleteArtwork(id: string): Promise<ActionResult> {
 
 export async function toggleArtworkFeatured(id: string): Promise<ActionResult> {
   await requireAuth();
-  const artwork = await prisma.artwork.findUnique({ where: { id } });
+  const artwork = await (await getDb()).artwork.findUnique({ where: { id } });
   if (!artwork) return { success: false, error: "Artwork not found" };
 
-  await prisma.artwork.update({
+  await (await getDb()).artwork.update({
     where: { id },
     data: { featured: !artwork.featured },
   });
@@ -91,10 +91,10 @@ export async function toggleArtworkFeatured(id: string): Promise<ActionResult> {
 
 export async function toggleArtworkForSale(id: string): Promise<ActionResult> {
   await requireAuth();
-  const artwork = await prisma.artwork.findUnique({ where: { id } });
+  const artwork = await (await getDb()).artwork.findUnique({ where: { id } });
   if (!artwork) return { success: false, error: "Artwork not found" };
 
-  await prisma.artwork.update({
+  await (await getDb()).artwork.update({
     where: { id },
     data: { forSale: !artwork.forSale },
   });

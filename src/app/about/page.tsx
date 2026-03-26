@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import type { Metadata } from "next";
-import { prisma } from "@/lib/prisma";
+import { getDb } from "@/lib/prisma";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { PageHero } from "@/components/shared/page-hero";
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 };
 
 export default async function AboutPage() {
-  const page = await prisma.page.findUnique({ where: { slug: "about" } });
+  const page = await (await getDb()).page.findUnique({ where: { slug: "about" } });
 
   let bodyContent: { type: string; text: string }[] = [];
   if (page?.bodyContent) {

@@ -1,12 +1,12 @@
 export const dynamic = "force-dynamic";
 
-import { prisma } from "@/lib/prisma";
+import { getDb } from "@/lib/prisma";
 import { AdminHeader } from "@/components/layout/admin-header";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArtworkForm } from "@/components/forms/artwork-form";
 
 export default async function NewArtworkPage() {
-  const categories = await prisma.category.findMany({
+  const categories = await (await getDb()).category.findMany({
     orderBy: { name: "asc" },
   });
 

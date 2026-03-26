@@ -3,7 +3,7 @@ export const dynamic = "force-dynamic";
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { prisma } from "@/lib/prisma";
+import { getDb } from "@/lib/prisma";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { PageHero } from "@/components/shared/page-hero";
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 };
 
 export default async function GalleryPage() {
-  const categories = await prisma.category.findMany({
+  const categories = await (await getDb()).category.findMany({
     orderBy: { sortOrder: "asc" },
     include: {
       _count: { select: { artworks: { where: { status: { not: "HIDDEN" } } } } },

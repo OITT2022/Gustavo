@@ -1,13 +1,13 @@
 export const dynamic = "force-dynamic";
 
-import { prisma } from "@/lib/prisma";
+import { getDb } from "@/lib/prisma";
 import { AdminHeader } from "@/components/layout/admin-header";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { MessageActions } from "./message-actions";
 
 export default async function AdminMessagesPage() {
-  const messages = await prisma.contactMessage.findMany({
+  const messages = await (await getDb()).contactMessage.findMany({
     orderBy: { createdAt: "desc" },
   });
 

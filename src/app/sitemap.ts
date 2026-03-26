@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { prisma } from "@/lib/prisma";
+import { getDb } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
@@ -7,11 +7,11 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [artworks, categories] = await Promise.all([
-    prisma.artwork.findMany({
+    (await getDb()).artwork.findMany({
       where: { status: { not: "HIDDEN" } },
       select: { slug: true, updatedAt: true },
     }),
-    prisma.category.findMany({
+    (await getDb()).category.findMany({
       select: { slug: true, updatedAt: true },
     }),
   ]);

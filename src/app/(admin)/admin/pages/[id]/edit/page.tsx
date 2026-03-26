@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import { notFound } from "next/navigation";
-import { prisma } from "@/lib/prisma";
+import { getDb } from "@/lib/prisma";
 import { AdminHeader } from "@/components/layout/admin-header";
 import { Card, CardContent } from "@/components/ui/card";
 import { PageForm } from "@/components/forms/page-form";
@@ -12,7 +12,7 @@ interface Props {
 
 export default async function EditPagePage({ params }: Props) {
   const { id } = await params;
-  const page = await prisma.page.findUnique({ where: { id } });
+  const page = await (await getDb()).page.findUnique({ where: { id } });
 
   if (!page) notFound();
 

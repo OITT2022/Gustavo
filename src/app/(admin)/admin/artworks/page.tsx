@@ -2,7 +2,7 @@ export const dynamic = "force-dynamic";
 
 import Link from "next/link";
 import Image from "next/image";
-import { prisma } from "@/lib/prisma";
+import { getDb } from "@/lib/prisma";
 import { AdminHeader } from "@/components/layout/admin-header";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -12,7 +12,7 @@ import { Plus, Pencil } from "lucide-react";
 import { DeleteArtworkButton } from "./delete-button";
 
 export default async function AdminArtworksPage() {
-  const artworks = await prisma.artwork.findMany({
+  const artworks = await (await getDb()).artwork.findMany({
     orderBy: { createdAt: "desc" },
     include: { category: true },
   });

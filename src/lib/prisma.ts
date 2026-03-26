@@ -2,35 +2,31 @@ import { PrismaClient } from "@prisma/client";
 import { PrismaD1 } from "@prisma/adapter-d1";
 
 const globalForPrisma = globalThis as unknown as {
-  prisma: PrismaClient | undefined;
-  __D1_DB?: D1Database;
+  localPrisma: PrismaClient | undefined;
 };
 
-function createPrismaClient() {
-  // On Cloudflare Workers with D1 binding
-  if (globalForPrisma.__D1_DB) {
-    const adapter = new PrismaD1(globalForPrisma.__D1_DB);
-    return new PrismaClient({ adapter } as never);
+/**
+ * Get a Prisma client that works in both environments:
+ * - Cloudflare Workers: uses D1 adapter via getCloudflareContext()
+ * - Local dev (Node.js): uses SQLite file via DATABASE_URL
+ */
+export async function getDb(): Promise<PrismaClient> {
+  // Try Cloudflare Workers D1
+  try {
+    const mod = await import("@opennextjs/cloudflare");
+    const { env } = await mod.getCloudflareContext();
+    const db = (env as Record<string, unknown>).DB as D1Database;
+    if (db) {
+      const adapter = new PrismaD1(db);
+      return new PrismaClient({ adapter } as never);
+    }
+  } catch {
+    // Not in Cloudflare Workers, fall through to local
   }
 
-  // Check for process.env (Node.js / local dev with SQLite file)
-  if (typeof process !== "undefined" && process.env?.DATABASE_URL) {
-    return new PrismaClient();
+  // Local dev with SQLite file
+  if (!globalForPrisma.localPrisma) {
+    globalForPrisma.localPrisma = new PrismaClient();
   }
-
-  // Fallback
-  return new PrismaClient();
-}
-
-export const prisma = globalForPrisma.prisma ?? createPrismaClient();
-
-if (typeof process !== "undefined" && process.env?.NODE_ENV !== "production") {
-  globalForPrisma.prisma = prisma;
-}
-
-/** Call this to set the D1 binding before using prisma in Cloudflare Workers */
-export function initPrismaD1(db: D1Database) {
-  globalForPrisma.__D1_DB = db;
-  // Reset cached client so next access creates one with D1
-  globalForPrisma.prisma = undefined;
+  return globalForPrisma.localPrisma;
 }

@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import Link from "next/link";
-import { prisma } from "@/lib/prisma";
+import { getDb } from "@/lib/prisma";
 import { AdminHeader } from "@/components/layout/admin-header";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
 
 export default async function AdminPagesPage() {
-  const pages = await prisma.page.findMany({
+  const pages = await (await getDb()).page.findMany({
     orderBy: { title: "asc" },
   });
 

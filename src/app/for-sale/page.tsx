@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import type { Metadata } from "next";
-import { prisma } from "@/lib/prisma";
+import { getDb } from "@/lib/prisma";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { PageHero } from "@/components/shared/page-hero";
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 };
 
 export default async function ForSalePage() {
-  const artworks = await prisma.artwork.findMany({
+  const artworks = await (await getDb()).artwork.findMany({
     where: { forSale: true, status: { not: "HIDDEN" } },
     orderBy: [{ status: "asc" }, { sortOrder: "asc" }],
   });

@@ -1,6 +1,6 @@
 export const dynamic = "force-dynamic";
 
-import { prisma } from "@/lib/prisma";
+import { getDb } from "@/lib/prisma";
 import { AdminHeader } from "@/components/layout/admin-header";
 import { Card, CardContent } from "@/components/ui/card";
 import { Image, FolderOpen, MessageSquare, DollarSign } from "lucide-react";
@@ -8,11 +8,11 @@ import { Image, FolderOpen, MessageSquare, DollarSign } from "lucide-react";
 export default async function AdminDashboard() {
   const [artworkCount, categoryCount, messageCount, forSaleCount, recentMessages] =
     await Promise.all([
-      prisma.artwork.count(),
-      prisma.category.count(),
-      prisma.contactMessage.count({ where: { isHandled: false } }),
-      prisma.artwork.count({ where: { forSale: true } }),
-      prisma.contactMessage.findMany({
+      (await getDb()).artwork.count(),
+      (await getDb()).category.count(),
+      (await getDb()).contactMessage.count({ where: { isHandled: false } }),
+      (await getDb()).artwork.count({ where: { forSale: true } }),
+      (await getDb()).contactMessage.findMany({
         orderBy: { createdAt: "desc" },
         take: 5,
       }),

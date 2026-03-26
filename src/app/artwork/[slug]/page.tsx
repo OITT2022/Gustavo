@@ -2,7 +2,7 @@ export const dynamic = "force-dynamic";
 
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { prisma } from "@/lib/prisma";
+import { getDb } from "@/lib/prisma";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { ArtworkDetail } from "@/components/artwork/artwork-detail";
@@ -13,7 +13,7 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const artwork = await prisma.artwork.findUnique({ where: { slug } });
+  const artwork = await (await getDb()).artwork.findUnique({ where: { slug } });
   if (!artwork) return {};
   return {
     title: artwork.seoTitle || artwork.title,
@@ -31,7 +31,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ArtworkPage({ params }: Props) {
   const { slug } = await params;
-  const artwork = await prisma.artwork.findUnique({
+  const artwork = await (await getDb()).artwork.findUnique({
     where: { slug },
     include: { category: true },
   });

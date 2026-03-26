@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { prisma } from "@/lib/prisma";
+import { getDb } from "@/lib/prisma";
 import { settingsSchema } from "@/validations/settings";
 import { auth } from "@/lib/auth";
 import type { ActionResult, SiteSettings } from "@/types";
@@ -20,7 +20,7 @@ export async function updateSettings(
     return { success: false, error: parsed.error.errors[0].message };
   }
 
-  const settings = await prisma.siteSettings.upsert({
+  const settings = await (await getDb()).siteSettings.upsert({
     where: { id: "default" },
     update: parsed.data,
     create: { id: "default", ...parsed.data },
@@ -31,5 +31,5 @@ export async function updateSettings(
 }
 
 export async function getSettings(): Promise<SiteSettings | null> {
-  return prisma.siteSettings.findUnique({ where: { id: "default" } });
+  return (await getDb()).siteSettings.findUnique({ where: { id: "default" } });
 }

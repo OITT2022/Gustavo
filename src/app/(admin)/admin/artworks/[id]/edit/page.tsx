@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import { notFound } from "next/navigation";
-import { prisma } from "@/lib/prisma";
+import { getDb } from "@/lib/prisma";
 import { AdminHeader } from "@/components/layout/admin-header";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArtworkForm } from "@/components/forms/artwork-form";
@@ -14,8 +14,8 @@ export default async function EditArtworkPage({ params }: Props) {
   const { id } = await params;
 
   const [artwork, categories] = await Promise.all([
-    prisma.artwork.findUnique({ where: { id } }),
-    prisma.category.findMany({ orderBy: { name: "asc" } }),
+    (await getDb()).artwork.findUnique({ where: { id } }),
+    (await getDb()).category.findMany({ orderBy: { name: "asc" } }),
   ]);
 
   if (!artwork) notFound();
