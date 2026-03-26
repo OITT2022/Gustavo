@@ -38,12 +38,27 @@ export default async function AboutPage() {
           <div className="mx-auto max-w-3xl">
             {bodyContent && bodyContent.length > 0 ? (
               <div className="prose prose-gallery max-w-none">
-                {bodyContent.map((block, i) => {
+                {bodyContent.map((block: { type: string; text: string; url?: string }, i: number) => {
                   if (block.type === "heading") {
                     return (
                       <h2 key={i} className="heading-3 mt-8 first:mt-0">
                         {block.text}
                       </h2>
+                    );
+                  }
+                  if (block.type === "image" && block.url) {
+                    return (
+                      <figure key={i} className="my-6">
+                        <img src={block.url} alt={block.text || ""} className="w-full rounded" />
+                        {block.text && <figcaption className="mt-2 text-sm text-gallery-500 text-center">{block.text}</figcaption>}
+                      </figure>
+                    );
+                  }
+                  if (block.type === "quote") {
+                    return (
+                      <blockquote key={i} className="border-l-4 border-gallery-300 pl-4 italic text-gallery-600 my-4">
+                        {block.text}
+                      </blockquote>
                     );
                   }
                   return (

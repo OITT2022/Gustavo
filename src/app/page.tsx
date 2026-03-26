@@ -26,7 +26,7 @@ export default async function HomePage() {
     <>
       <Header />
       <main>
-        <HeroSection imageUrl="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=1920&q=80" />
+        <HeroSection imageUrl="/artworks/site/hero.jpg" />
 
         <FeaturedArtworks artworks={featured} />
 
