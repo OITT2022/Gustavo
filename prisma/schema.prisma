@@ -1,0 +1,139 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ArtworkStatus {
+  AVAILABLE
+  SOLD
+  RESERVED
+  HIDDEN
+}
+
+enum CategoryType {
+  PERIOD
+  DRAWINGS
+  COMMISSIONS
+  SALE
+  GENERAL
+}
+
+enum UserRole {
+  ADMIN
+  EDITOR
+}
+
+model Artwork {
+  id               String        @id @default(cuid())
+  title            String
+  slug             String        @unique
+  artistName       String        @default("Gustavo Bar Valenzuela")
+  year             Int?
+  medium           String?
+  dimensionsText   String?
+  width            Float?
+  height           Float?
+  depth            Float?
+  unit             String?       @default("cm")
+  shortDescription String?
+  fullDescription  String?       @db.Text
+  mainImageUrl     String
+  galleryImages    String[]
+  categoryId       String?
+  category         Category?     @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  collectionPeriod String?
+  tags             String[]
+  price            Float?
+  currency         String?       @default("USD")
+  status           ArtworkStatus @default(AVAILABLE)
+  featured         Boolean       @default(false)
+  forSale          Boolean       @default(false)
+  sortOrder        Int           @default(0)
+  seoTitle         String?
+  seoDescription   String?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+  publishedAt      DateTime?
+
+  @@index([categoryId])
+  @@index([status])
+  @@index([forSale])
+  @@index([featured])
+  @@index([sortOrder])
+}
+
+model Category {
+  id            String       @id @default(cuid())
+  name          String
+  slug          String       @unique
+  description   String?      @db.Text
+  coverImageUrl String?
+  type          CategoryType @default(GENERAL)
+  sortOrder     Int          @default(0)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  artworks      Artwork[]
+
+  @@index([type])
+  @@index([sortOrder])
+}
+
+model Page {
+  id             String   @id @default(cuid())
+  title          String
+  slug           String   @unique
+  heroTitle      String?
+  heroSubtitle   String?
+  heroImageUrl   String?
+  bodyContent    Json?
+  seoTitle       String?
+  seoDescription String?
+  isPublished    Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model ContactMessage {
+  id               String   @id @default(cuid())
+  fullName         String
+  email            String
+  phone            String?
+  subject          String?
+  message          String   @db.Text
+  artworkReference String?
+  isHandled        Boolean  @default(false)
+  createdAt        DateTime @default(now())
+}
+
+model AdminUser {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         UserRole @default(ADMIN)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model SiteSettings {
+  id           String   @id @default("default")
+  artistName   String   @default("Gustavo Bar Valenzuela")
+  siteTitle    String   @default("Gustavo Bar Valenzuela — Fine Art")
+  tagline      String?
+  aboutSnippet String?  @db.Text
+  contactEmail String?
+  phone        String?
+  address      String?
+  instagram    String?
+  facebook     String?
+  twitter      String?
+  youtube      String?
+  linkedin     String?
+  logoUrl      String?
+  faviconUrl   String?
+  updatedAt    DateTime @updatedAt
+}
