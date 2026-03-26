@@ -26,3 +26,23 @@ export type ContentBlock =
   | { type: "paragraph"; text: string }
   | { type: "image"; url: string; alt?: string; caption?: string }
   | { type: "quote"; text: string; attribution?: string };
+
+/** Parse JSON string fields that store arrays */
+export function parseJsonArray(value: string | null | undefined): string[] {
+  if (!value) return [];
+  try {
+    return JSON.parse(value);
+  } catch {
+    return [];
+  }
+}
+
+/** Parse JSON string fields that store content blocks */
+export function parseBodyContent(value: string | null | undefined): ContentBlock[] {
+  if (!value) return [];
+  try {
+    return JSON.parse(value);
+  } catch {
+    return [];
+  }
+}

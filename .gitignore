@@ -33,3 +33,12 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# sqlite
+prisma/dev.db
+prisma/dev.db-journal
+
+# cloudflare
+.open-next
+.dev.vars
+wrangler.jsonc

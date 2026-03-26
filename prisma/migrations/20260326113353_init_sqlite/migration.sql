@@ -1,83 +1,69 @@
--- CreateEnum
-CREATE TYPE "ArtworkStatus" AS ENUM ('AVAILABLE', 'SOLD', 'RESERVED', 'HIDDEN');
-
--- CreateEnum
-CREATE TYPE "CategoryType" AS ENUM ('PERIOD', 'DRAWINGS', 'COMMISSIONS', 'SALE', 'GENERAL');
-
--- CreateEnum
-CREATE TYPE "UserRole" AS ENUM ('ADMIN', 'EDITOR');
-
 -- CreateTable
 CREATE TABLE "Artwork" (
-    "id" TEXT NOT NULL,
+    "id" TEXT NOT NULL PRIMARY KEY,
     "title" TEXT NOT NULL,
     "slug" TEXT NOT NULL,
-    "artistName" TEXT NOT NULL DEFAULT 'Israel Valenzuela',
+    "artistName" TEXT NOT NULL DEFAULT 'Gustavo Bar Valenzuela',
     "year" INTEGER,
     "medium" TEXT,
     "dimensionsText" TEXT,
-    "width" DOUBLE PRECISION,
-    "height" DOUBLE PRECISION,
-    "depth" DOUBLE PRECISION,
+    "width" REAL,
+    "height" REAL,
+    "depth" REAL,
     "unit" TEXT DEFAULT 'cm',
     "shortDescription" TEXT,
     "fullDescription" TEXT,
     "mainImageUrl" TEXT NOT NULL,
-    "galleryImages" TEXT[],
+    "galleryImages" TEXT NOT NULL DEFAULT '[]',
     "categoryId" TEXT,
     "collectionPeriod" TEXT,
-    "tags" TEXT[],
-    "price" DOUBLE PRECISION,
+    "tags" TEXT NOT NULL DEFAULT '[]',
+    "price" REAL,
     "currency" TEXT DEFAULT 'USD',
-    "status" "ArtworkStatus" NOT NULL DEFAULT 'AVAILABLE',
+    "status" TEXT NOT NULL DEFAULT 'AVAILABLE',
     "featured" BOOLEAN NOT NULL DEFAULT false,
     "forSale" BOOLEAN NOT NULL DEFAULT false,
     "sortOrder" INTEGER NOT NULL DEFAULT 0,
     "seoTitle" TEXT,
     "seoDescription" TEXT,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-    "publishedAt" TIMESTAMP(3),
-
-    CONSTRAINT "Artwork_pkey" PRIMARY KEY ("id")
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL,
+    "publishedAt" DATETIME,
+    CONSTRAINT "Artwork_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "Category" ("id") ON DELETE SET NULL ON UPDATE CASCADE
 );
 
 -- CreateTable
 CREATE TABLE "Category" (
-    "id" TEXT NOT NULL,
+    "id" TEXT NOT NULL PRIMARY KEY,
     "name" TEXT NOT NULL,
     "slug" TEXT NOT NULL,
     "description" TEXT,
     "coverImageUrl" TEXT,
-    "type" "CategoryType" NOT NULL DEFAULT 'GENERAL',
+    "type" TEXT NOT NULL DEFAULT 'GENERAL',
     "sortOrder" INTEGER NOT NULL DEFAULT 0,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "Category_pkey" PRIMARY KEY ("id")
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL
 );
 
 -- CreateTable
 CREATE TABLE "Page" (
-    "id" TEXT NOT NULL,
+    "id" TEXT NOT NULL PRIMARY KEY,
     "title" TEXT NOT NULL,
     "slug" TEXT NOT NULL,
     "heroTitle" TEXT,
     "heroSubtitle" TEXT,
     "heroImageUrl" TEXT,
-    "bodyContent" JSONB,
+    "bodyContent" TEXT,
     "seoTitle" TEXT,
     "seoDescription" TEXT,
     "isPublished" BOOLEAN NOT NULL DEFAULT false,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "Page_pkey" PRIMARY KEY ("id")
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL
 );
 
 -- CreateTable
 CREATE TABLE "ContactMessage" (
-    "id" TEXT NOT NULL,
+    "id" TEXT NOT NULL PRIMARY KEY,
     "fullName" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "phone" TEXT,
@@ -85,29 +71,25 @@ CREATE TABLE "ContactMessage" (
     "message" TEXT NOT NULL,
     "artworkReference" TEXT,
     "isHandled" BOOLEAN NOT NULL DEFAULT false,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT "ContactMessage_pkey" PRIMARY KEY ("id")
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- CreateTable
 CREATE TABLE "AdminUser" (
-    "id" TEXT NOT NULL,
+    "id" TEXT NOT NULL PRIMARY KEY,
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "passwordHash" TEXT NOT NULL,
-    "role" "UserRole" NOT NULL DEFAULT 'ADMIN',
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "AdminUser_pkey" PRIMARY KEY ("id")
+    "role" TEXT NOT NULL DEFAULT 'ADMIN',
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL
 );
 
 -- CreateTable
 CREATE TABLE "SiteSettings" (
-    "id" TEXT NOT NULL DEFAULT 'default',
-    "artistName" TEXT NOT NULL DEFAULT 'Israel Valenzuela',
-    "siteTitle" TEXT NOT NULL DEFAULT 'Israel Valenzuela — Fine Art',
+    "id" TEXT NOT NULL PRIMARY KEY DEFAULT 'default',
+    "artistName" TEXT NOT NULL DEFAULT 'Gustavo Bar Valenzuela',
+    "siteTitle" TEXT NOT NULL DEFAULT 'Gustavo Bar Valenzuela — Fine Art',
     "tagline" TEXT,
     "aboutSnippet" TEXT,
     "contactEmail" TEXT,
@@ -120,9 +102,7 @@ CREATE TABLE "SiteSettings" (
     "linkedin" TEXT,
     "logoUrl" TEXT,
     "faviconUrl" TEXT,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "SiteSettings_pkey" PRIMARY KEY ("id")
+    "updatedAt" DATETIME NOT NULL
 );
 
 -- CreateIndex
@@ -157,6 +137,3 @@ CREATE UNIQUE INDEX "Page_slug_key" ON "Page"("slug");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "AdminUser_email_key" ON "AdminUser"("email");
-
--- AddForeignKey
-ALTER TABLE "Artwork" ADD CONSTRAINT "Artwork_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "Category"("id") ON DELETE SET NULL ON UPDATE CASCADE;

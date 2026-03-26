@@ -19,12 +19,17 @@ export function PageForm({ page }: PageFormProps) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
 
-  const bodyText =
-    page.bodyContent && Array.isArray(page.bodyContent)
-      ? (page.bodyContent as { type: string; text: string }[])
-          .map((block) => block.text)
-          .join("\n\n")
-      : "";
+  let bodyText = "";
+  if (page.bodyContent) {
+    try {
+      const parsed = typeof page.bodyContent === "string"
+        ? JSON.parse(page.bodyContent)
+        : page.bodyContent;
+      if (Array.isArray(parsed)) {
+        bodyText = parsed.map((block: { text: string }) => block.text).join("\n\n");
+      }
+    } catch { /* use empty */ }
+  }
 
   const {
     register,
@@ -45,9 +50,9 @@ export function PageForm({ page }: PageFormProps) {
   async function onSubmit(data: PageFormData) {
     setError(null);
 
-    // Convert body text to simple content blocks
+    // Convert body text to JSON string of content blocks
     const bodyContent = data.bodyContent
-      ? [{ type: "paragraph", text: data.bodyContent }]
+      ? JSON.stringify([{ type: "paragraph", text: data.bodyContent }])
       : undefined;
 
     const result = await updatePage(page.id, { ...data, bodyContent });

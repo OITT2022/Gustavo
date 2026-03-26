@@ -3,60 +3,40 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
-enum ArtworkStatus {
-  AVAILABLE
-  SOLD
-  RESERVED
-  HIDDEN
-}
-
-enum CategoryType {
-  PERIOD
-  DRAWINGS
-  COMMISSIONS
-  SALE
-  GENERAL
-}
-
-enum UserRole {
-  ADMIN
-  EDITOR
-}
-
 model Artwork {
-  id               String        @id @default(cuid())
+  id               String    @id @default(cuid())
   title            String
-  slug             String        @unique
-  artistName       String        @default("Gustavo Bar Valenzuela")
+  slug             String    @unique
+  artistName       String    @default("Gustavo Bar Valenzuela")
   year             Int?
   medium           String?
   dimensionsText   String?
   width            Float?
   height           Float?
   depth            Float?
-  unit             String?       @default("cm")
+  unit             String?   @default("cm")
   shortDescription String?
-  fullDescription  String?       @db.Text
+  fullDescription  String?
   mainImageUrl     String
-  galleryImages    String[]
+  galleryImages    String    @default("[]")
   categoryId       String?
-  category         Category?     @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  category         Category? @relation(fields: [categoryId], references: [id])
   collectionPeriod String?
-  tags             String[]
+  tags             String    @default("[]")
   price            Float?
-  currency         String?       @default("USD")
-  status           ArtworkStatus @default(AVAILABLE)
-  featured         Boolean       @default(false)
-  forSale          Boolean       @default(false)
-  sortOrder        Int           @default(0)
+  currency         String?   @default("USD")
+  status           String    @default("AVAILABLE")
+  featured         Boolean   @default(false)
+  forSale          Boolean   @default(false)
+  sortOrder        Int       @default(0)
   seoTitle         String?
   seoDescription   String?
-  createdAt        DateTime      @default(now())
-  updatedAt        DateTime      @updatedAt
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
   publishedAt      DateTime?
 
   @@index([categoryId])
@@ -67,15 +47,15 @@ model Artwork {
 }
 
 model Category {
-  id            String       @id @default(cuid())
+  id            String    @id @default(cuid())
   name          String
-  slug          String       @unique
-  description   String?      @db.Text
+  slug          String    @unique
+  description   String?
   coverImageUrl String?
-  type          CategoryType @default(GENERAL)
-  sortOrder     Int          @default(0)
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
+  type          String    @default("GENERAL")
+  sortOrder     Int       @default(0)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
   artworks      Artwork[]
 
   @@index([type])
@@ -89,7 +69,7 @@ model Page {
   heroTitle      String?
   heroSubtitle   String?
   heroImageUrl   String?
-  bodyContent    Json?
+  bodyContent    String?
   seoTitle       String?
   seoDescription String?
   isPublished    Boolean  @default(false)
@@ -103,7 +83,7 @@ model ContactMessage {
   email            String
   phone            String?
   subject          String?
-  message          String   @db.Text
+  message          String
   artworkReference String?
   isHandled        Boolean  @default(false)
   createdAt        DateTime @default(now())
@@ -114,7 +94,7 @@ model AdminUser {
   name         String
   email        String   @unique
   passwordHash String
-  role         UserRole @default(ADMIN)
+  role         String   @default("ADMIN")
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }
@@ -124,7 +104,7 @@ model SiteSettings {
   artistName   String   @default("Gustavo Bar Valenzuela")
   siteTitle    String   @default("Gustavo Bar Valenzuela — Fine Art")
   tagline      String?
-  aboutSnippet String?  @db.Text
+  aboutSnippet String?
   contactEmail String?
   phone        String?
   address      String?

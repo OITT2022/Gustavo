@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { artworkSchema, type ArtworkFormData } from "@/validations/artwork";
 import { createArtwork, updateArtwork } from "@/actions/artwork-actions";
 import { slugify } from "@/lib/utils";
+import { parseJsonArray } from "@/types";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select } from "@/components/ui/select";
@@ -48,13 +49,13 @@ export function ArtworkForm({ artwork, categories }: ArtworkFormProps) {
           shortDescription: artwork.shortDescription ?? undefined,
           fullDescription: artwork.fullDescription ?? undefined,
           mainImageUrl: artwork.mainImageUrl,
-          galleryImages: artwork.galleryImages,
+          galleryImages: parseJsonArray(artwork.galleryImages),
           categoryId: artwork.categoryId ?? undefined,
           collectionPeriod: artwork.collectionPeriod ?? undefined,
-          tags: artwork.tags,
+          tags: parseJsonArray(artwork.tags),
           price: artwork.price ?? undefined,
           currency: artwork.currency ?? "USD",
-          status: artwork.status,
+          status: artwork.status as "AVAILABLE" | "SOLD" | "RESERVED" | "HIDDEN",
           featured: artwork.featured,
           forSale: artwork.forSale,
           sortOrder: artwork.sortOrder,
@@ -244,7 +245,7 @@ export function ArtworkForm({ artwork, categories }: ArtworkFormProps) {
               e.target.value.split(",").map((t) => t.trim()).filter(Boolean)
             )
           }
-          defaultValue={artwork?.tags.join(", ") || ""}
+          defaultValue={artwork ? parseJsonArray(artwork.tags).join(", ") : ""}
         />
       </div>
 

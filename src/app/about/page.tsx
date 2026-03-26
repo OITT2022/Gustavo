@@ -14,9 +14,14 @@ export const metadata: Metadata = {
 export default async function AboutPage() {
   const page = await prisma.page.findUnique({ where: { slug: "about" } });
 
-  const bodyContent = page?.bodyContent as
-    | { type: string; text: string }[]
-    | null;
+  let bodyContent: { type: string; text: string }[] = [];
+  if (page?.bodyContent) {
+    try {
+      bodyContent = typeof page.bodyContent === "string"
+        ? JSON.parse(page.bodyContent)
+        : page.bodyContent as { type: string; text: string }[];
+    } catch { /* empty */ }
+  }
 
   return (
     <>

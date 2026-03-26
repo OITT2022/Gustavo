@@ -35,7 +35,7 @@ export function CategoryForm({ category, onSuccess }: CategoryFormProps) {
           slug: category.slug,
           description: category.description ?? undefined,
           coverImageUrl: category.coverImageUrl ?? undefined,
-          type: category.type,
+          type: category.type as "PERIOD" | "DRAWINGS" | "COMMISSIONS" | "SALE" | "GENERAL",
           sortOrder: category.sortOrder,
         }
       : { type: "GENERAL" as const, sortOrder: 0 },

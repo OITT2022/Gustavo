@@ -19,10 +19,13 @@ export async function createArtwork(data: unknown): Promise<ActionResult<Artwork
     return { success: false, error: parsed.error.errors[0].message };
   }
 
+  const { galleryImages, tags, ...rest } = parsed.data;
   const artwork = await prisma.artwork.create({
     data: {
-      ...parsed.data,
-      publishedAt: parsed.data.status !== "HIDDEN" ? new Date() : null,
+      ...rest,
+      galleryImages: JSON.stringify(galleryImages),
+      tags: JSON.stringify(tags),
+      publishedAt: rest.status !== "HIDDEN" ? new Date() : null,
     },
   });
 
@@ -42,9 +45,14 @@ export async function updateArtwork(
     return { success: false, error: parsed.error.errors[0].message };
   }
 
+  const { galleryImages, tags, ...rest } = parsed.data;
   const artwork = await prisma.artwork.update({
     where: { id },
-    data: parsed.data,
+    data: {
+      ...rest,
+      galleryImages: JSON.stringify(galleryImages),
+      tags: JSON.stringify(tags),
+    },
   });
 
   revalidatePath("/");

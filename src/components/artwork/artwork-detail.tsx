@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { ArtworkWithCategory } from "@/types";
+import { type ArtworkWithCategory, parseJsonArray } from "@/types";
 import { formatPrice, getDimensionsDisplay } from "@/lib/utils";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { Button } from "@/components/ui/button";
@@ -12,7 +12,9 @@ interface ArtworkDetailProps {
 
 export function ArtworkDetail({ artwork }: ArtworkDetailProps) {
   const dimensions = getDimensionsDisplay(artwork);
-  const allImages = [artwork.mainImageUrl, ...artwork.galleryImages];
+  const galleryImages = parseJsonArray(artwork.galleryImages);
+  const tags = parseJsonArray(artwork.tags);
+  const allImages = [artwork.mainImageUrl, ...galleryImages];
 
   return (
     <div className="container-gallery py-12 md:py-16">
@@ -114,9 +116,9 @@ export function ArtworkDetail({ artwork }: ArtworkDetailProps) {
           </div>
 
           {/* Tags */}
-          {artwork.tags.length > 0 && (
+          {tags.length > 0 && (
             <div className="flex flex-wrap gap-2 pt-4">
-              {artwork.tags.map((tag) => (
+              {tags.map((tag) => (
                 <span
                   key={tag}
                   className="rounded-full bg-gallery-100 px-3 py-1 text-xs text-gallery-600"
