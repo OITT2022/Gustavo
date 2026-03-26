@@ -3,8 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model Artwork {
@@ -20,13 +21,13 @@ model Artwork {
   depth            Float?
   unit             String?   @default("cm")
   shortDescription String?
-  fullDescription  String?
+  fullDescription  String?   @db.Text
   mainImageUrl     String
-  galleryImages    String    @default("[]")
+  galleryImages    String[]
   categoryId       String?
-  category         Category? @relation(fields: [categoryId], references: [id])
+  category         Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   collectionPeriod String?
-  tags             String    @default("[]")
+  tags             String[]
   price            Float?
   currency         String?   @default("USD")
   status           String    @default("AVAILABLE")
@@ -50,7 +51,7 @@ model Category {
   id            String    @id @default(cuid())
   name          String
   slug          String    @unique
-  description   String?
+  description   String?   @db.Text
   coverImageUrl String?
   type          String    @default("GENERAL")
   sortOrder     Int       @default(0)
@@ -69,7 +70,7 @@ model Page {
   heroTitle      String?
   heroSubtitle   String?
   heroImageUrl   String?
-  bodyContent    String?
+  bodyContent    String?  @db.Text
   seoTitle       String?
   seoDescription String?
   isPublished    Boolean  @default(false)
@@ -83,7 +84,7 @@ model ContactMessage {
   email            String
   phone            String?
   subject          String?
-  message          String
+  message          String   @db.Text
   artworkReference String?
   isHandled        Boolean  @default(false)
   createdAt        DateTime @default(now())
@@ -104,7 +105,7 @@ model SiteSettings {
   artistName   String   @default("Gustavo Bar Valenzuela")
   siteTitle    String   @default("Gustavo Bar Valenzuela — Fine Art")
   tagline      String?
-  aboutSnippet String?
+  aboutSnippet String?  @db.Text
   contactEmail String?
   phone        String?
   address      String?

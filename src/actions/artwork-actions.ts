@@ -19,13 +19,10 @@ export async function createArtwork(data: unknown): Promise<ActionResult<Artwork
     return { success: false, error: parsed.error.errors[0].message };
   }
 
-  const { galleryImages, tags, ...rest } = parsed.data;
   const artwork = await getDb().artwork.create({
     data: {
-      ...rest,
-      galleryImages: JSON.stringify(galleryImages),
-      tags: JSON.stringify(tags),
-      publishedAt: rest.status !== "HIDDEN" ? new Date() : null,
+      ...parsed.data,
+      publishedAt: parsed.data.status !== "HIDDEN" ? new Date() : null,
     },
   });
 
@@ -45,14 +42,9 @@ export async function updateArtwork(
     return { success: false, error: parsed.error.errors[0].message };
   }
 
-  const { galleryImages, tags, ...rest } = parsed.data;
   const artwork = await getDb().artwork.update({
     where: { id },
-    data: {
-      ...rest,
-      galleryImages: JSON.stringify(galleryImages),
-      tags: JSON.stringify(tags),
-    },
+    data: parsed.data,
   });
 
   revalidatePath("/");
