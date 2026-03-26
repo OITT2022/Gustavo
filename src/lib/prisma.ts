@@ -13,7 +13,8 @@ const globalForPrisma = globalThis as unknown as {
 export async function getDb(): Promise<PrismaClient> {
   // Try Cloudflare Workers D1 via dynamic import (may not exist at build time)
   try {
-    // @ts-expect-error - module only available at runtime in Cloudflare Workers
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore — module may or may not exist depending on build environment
     const mod = await import("@opennextjs/cloudflare");
     const { env } = await mod.getCloudflareContext();
     const db = (env as Record<string, unknown>).DB as D1Database;
