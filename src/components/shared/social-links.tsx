@@ -1,10 +1,9 @@
-import { Instagram, Facebook, Twitter, Youtube } from "lucide-react";
+import { Instagram, Facebook, Youtube } from "lucide-react";
 
 const socialLinks = [
-  { icon: Instagram, href: "#", label: "Instagram" },
-  { icon: Facebook, href: "#", label: "Facebook" },
-  { icon: Twitter, href: "#", label: "Twitter" },
-  { icon: Youtube, href: "#", label: "YouTube" },
+  { icon: Instagram, href: "https://www.instagram.com/valenzuela_arts_/", label: "Instagram" },
+  { icon: Facebook, href: "https://www.facebook.com/valenzuelarts", label: "Facebook" },
+  { icon: Youtube, href: "https://www.youtube.com/@gustavobarvalenzuela6440", label: "YouTube" },
 ];
 
 export function SocialLinks() {

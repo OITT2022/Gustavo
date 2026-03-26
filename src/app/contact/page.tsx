@@ -48,7 +48,7 @@ export default async function ContactPage({ searchParams }: Props) {
                       Email
                     </p>
                     <p className="text-sm text-gallery-600">
-                      contact@gustavobarvalenzuela.art
+                      valenzuelarts@gmail.com
                     </p>
                   </div>
                 </div>
@@ -59,7 +59,7 @@ export default async function ContactPage({ searchParams }: Props) {
                       Phone
                     </p>
                     <p className="text-sm text-gallery-600">
-                      By appointment
+                      972-549246080
                     </p>
                   </div>
                 </div>
@@ -70,7 +70,7 @@ export default async function ContactPage({ searchParams }: Props) {
                       Studio
                     </p>
                     <p className="text-sm text-gallery-600">
-                      Available upon request
+                      Abba Hillel 126, Ramat-Gan, Israel
                     </p>
                   </div>
                 </div>
