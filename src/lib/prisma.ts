@@ -11,8 +11,9 @@ const globalForPrisma = globalThis as unknown as {
  * - Local dev (Node.js): uses SQLite file via DATABASE_URL
  */
 export async function getDb(): Promise<PrismaClient> {
-  // Try Cloudflare Workers D1
+  // Try Cloudflare Workers D1 via dynamic import (may not exist at build time)
   try {
+    // @ts-expect-error - module only available at runtime in Cloudflare Workers
     const mod = await import("@opennextjs/cloudflare");
     const { env } = await mod.getCloudflareContext();
     const db = (env as Record<string, unknown>).DB as D1Database;
@@ -21,7 +22,7 @@ export async function getDb(): Promise<PrismaClient> {
       return new PrismaClient({ adapter } as never);
     }
   } catch {
-    // Not in Cloudflare Workers, fall through to local
+    // Not in Cloudflare Workers — fall through to local SQLite
   }
 
   // Local dev with SQLite file
