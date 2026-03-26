@@ -18,7 +18,7 @@ export async function createCategory(data: unknown): Promise<ActionResult<Catego
     return { success: false, error: parsed.error.errors[0].message };
   }
 
-  const category = await (await getDb()).category.create({ data: parsed.data });
+  const category = await getDb().category.create({ data: parsed.data });
   revalidatePath("/gallery");
   revalidatePath("/admin/categories");
   return { success: true, data: category };
@@ -34,7 +34,7 @@ export async function updateCategory(
     return { success: false, error: parsed.error.errors[0].message };
   }
 
-  const category = await (await getDb()).category.update({
+  const category = await getDb().category.update({
     where: { id },
     data: parsed.data,
   });
@@ -46,7 +46,7 @@ export async function updateCategory(
 
 export async function deleteCategory(id: string): Promise<ActionResult> {
   await requireAuth();
-  await (await getDb()).category.delete({ where: { id } });
+  await getDb().category.delete({ where: { id } });
   revalidatePath("/gallery");
   return { success: true };
 }

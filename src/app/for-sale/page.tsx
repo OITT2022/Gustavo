@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 };
 
 export default async function ForSalePage() {
-  const artworks = await (await getDb()).artwork.findMany({
+  const artworks = await getDb().artwork.findMany({
     where: { forSale: true, status: { not: "HIDDEN" } },
     orderBy: [{ status: "asc" }, { sortOrder: "asc" }],
   });

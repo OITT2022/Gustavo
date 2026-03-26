@@ -12,7 +12,7 @@ import { Plus, Pencil } from "lucide-react";
 import { DeleteArtworkButton } from "./delete-button";
 
 export default async function AdminArtworksPage() {
-  const artworks = await (await getDb()).artwork.findMany({
+  const artworks = await getDb().artwork.findMany({
     orderBy: { createdAt: "desc" },
     include: { category: true },
   });

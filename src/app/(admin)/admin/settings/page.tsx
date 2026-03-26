@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { SettingsForm } from "@/components/forms/settings-form";
 
 export default async function AdminSettingsPage() {
-  const settings = await (await getDb()).siteSettings.findUnique({
+  const settings = await getDb().siteSettings.findUnique({
     where: { id: "default" },
   });
 

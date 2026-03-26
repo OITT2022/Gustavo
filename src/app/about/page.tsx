@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 };
 
 export default async function AboutPage() {
-  const page = await (await getDb()).page.findUnique({ where: { slug: "about" } });
+  const page = await getDb().page.findUnique({ where: { slug: "about" } });
 
   let bodyContent: { type: string; text: string }[] = [];
   if (page?.bodyContent) {

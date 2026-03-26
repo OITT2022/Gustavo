@@ -10,12 +10,12 @@ import Image from "next/image";
 
 export default async function HomePage() {
   const [featured, categories] = await Promise.all([
-    (await getDb()).artwork.findMany({
+    getDb().artwork.findMany({
       where: { featured: true, status: { not: "HIDDEN" } },
       orderBy: { sortOrder: "asc" },
       take: 6,
     }),
-    (await getDb()).category.findMany({
+    getDb().category.findMany({
       orderBy: { sortOrder: "asc" },
       take: 4,
       include: { _count: { select: { artworks: true } } },

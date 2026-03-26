@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ArtworkForm } from "@/components/forms/artwork-form";
 
 export default async function NewArtworkPage() {
-  const categories = await (await getDb()).category.findMany({
+  const categories = await getDb().category.findMany({
     orderBy: { name: "asc" },
   });
 

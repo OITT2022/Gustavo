@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
 
 export default async function AdminPagesPage() {
-  const pages = await (await getDb()).page.findMany({
+  const pages = await getDb().page.findMany({
     orderBy: { title: "asc" },
   });
 

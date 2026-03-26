@@ -13,7 +13,7 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const artwork = await (await getDb()).artwork.findUnique({ where: { slug } });
+  const artwork = await getDb().artwork.findUnique({ where: { slug } });
   if (!artwork) return {};
   return {
     title: artwork.seoTitle || artwork.title,
@@ -31,7 +31,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ArtworkPage({ params }: Props) {
   const { slug } = await params;
-  const artwork = await (await getDb()).artwork.findUnique({
+  const artwork = await getDb().artwork.findUnique({
     where: { slug },
     include: { category: true },
   });

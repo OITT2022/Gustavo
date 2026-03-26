@@ -14,8 +14,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
 
-        const db = await getDb();
-        const user = await db.adminUser.findUnique({
+        const user = await getDb().adminUser.findUnique({
           where: { email: credentials.email as string },
         });
 

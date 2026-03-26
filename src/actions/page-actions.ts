@@ -21,7 +21,7 @@ export async function updatePage(
     return { success: false, error: parsed.error.errors[0].message };
   }
 
-  const page = await (await getDb()).page.update({
+  const page = await getDb().page.update({
     where: { id },
     data: parsed.data,
   });
@@ -37,14 +37,14 @@ export async function createPage(data: unknown): Promise<ActionResult<Page>> {
     return { success: false, error: parsed.error.errors[0].message };
   }
 
-  const page = await (await getDb()).page.create({ data: parsed.data });
+  const page = await getDb().page.create({ data: parsed.data });
   revalidatePath("/admin/pages");
   return { success: true, data: page };
 }
 
 export async function deletePage(id: string): Promise<ActionResult> {
   await requireAuth();
-  await (await getDb()).page.delete({ where: { id } });
+  await getDb().page.delete({ where: { id } });
   revalidatePath("/admin/pages");
   return { success: true };
 }

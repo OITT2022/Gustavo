@@ -14,8 +14,8 @@ export default async function EditArtworkPage({ params }: Props) {
   const { id } = await params;
 
   const [artwork, categories] = await Promise.all([
-    (await getDb()).artwork.findUnique({ where: { id } }),
-    (await getDb()).category.findMany({ orderBy: { name: "asc" } }),
+    getDb().artwork.findUnique({ where: { id } }),
+    getDb().category.findMany({ orderBy: { name: "asc" } }),
   ]);
 
   if (!artwork) notFound();

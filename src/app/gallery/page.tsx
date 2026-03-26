@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 };
 
 export default async function GalleryPage() {
-  const categories = await (await getDb()).category.findMany({
+  const categories = await getDb().category.findMany({
     orderBy: { sortOrder: "asc" },
     include: {
       _count: { select: { artworks: { where: { status: { not: "HIDDEN" } } } } },

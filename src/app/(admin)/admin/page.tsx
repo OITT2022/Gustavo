@@ -8,11 +8,11 @@ import { Image, FolderOpen, MessageSquare, DollarSign } from "lucide-react";
 export default async function AdminDashboard() {
   const [artworkCount, categoryCount, messageCount, forSaleCount, recentMessages] =
     await Promise.all([
-      (await getDb()).artwork.count(),
-      (await getDb()).category.count(),
-      (await getDb()).contactMessage.count({ where: { isHandled: false } }),
-      (await getDb()).artwork.count({ where: { forSale: true } }),
-      (await getDb()).contactMessage.findMany({
+      getDb().artwork.count(),
+      getDb().category.count(),
+      getDb().contactMessage.count({ where: { isHandled: false } }),
+      getDb().artwork.count({ where: { forSale: true } }),
+      getDb().contactMessage.findMany({
         orderBy: { createdAt: "desc" },
         take: 5,
       }),

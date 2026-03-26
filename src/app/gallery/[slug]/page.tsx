@@ -14,7 +14,7 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const category = await (await getDb()).category.findUnique({ where: { slug } });
+  const category = await getDb().category.findUnique({ where: { slug } });
   if (!category) return {};
   return {
     title: category.name,
@@ -24,13 +24,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function CategoryPage({ params }: Props) {
   const { slug } = await params;
-  const category = await (await getDb()).category.findUnique({
+  const category = await getDb().category.findUnique({
     where: { slug },
   });
 
   if (!category) notFound();
 
-  const artworks = await (await getDb()).artwork.findMany({
+  const artworks = await getDb().artwork.findMany({
     where: { categoryId: category.id, status: { not: "HIDDEN" } },
     orderBy: { sortOrder: "asc" },
   });

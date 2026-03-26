@@ -7,11 +7,11 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [artworks, categories] = await Promise.all([
-    (await getDb()).artwork.findMany({
+    getDb().artwork.findMany({
       where: { status: { not: "HIDDEN" } },
       select: { slug: true, updatedAt: true },
     }),
-    (await getDb()).category.findMany({
+    getDb().category.findMany({
       select: { slug: true, updatedAt: true },
     }),
   ]);

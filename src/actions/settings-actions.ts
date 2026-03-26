@@ -20,7 +20,7 @@ export async function updateSettings(
     return { success: false, error: parsed.error.errors[0].message };
   }
 
-  const settings = await (await getDb()).siteSettings.upsert({
+  const settings = await getDb().siteSettings.upsert({
     where: { id: "default" },
     update: parsed.data,
     create: { id: "default", ...parsed.data },
@@ -31,5 +31,5 @@ export async function updateSettings(
 }
 
 export async function getSettings(): Promise<SiteSettings | null> {
-  return (await getDb()).siteSettings.findUnique({ where: { id: "default" } });
+  return getDb().siteSettings.findUnique({ where: { id: "default" } });
 }

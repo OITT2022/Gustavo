@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { MessageActions } from "./message-actions";
 
 export default async function AdminMessagesPage() {
-  const messages = await (await getDb()).contactMessage.findMany({
+  const messages = await getDb().contactMessage.findMany({
     orderBy: { createdAt: "desc" },
   });
 

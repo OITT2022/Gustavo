@@ -21,15 +21,15 @@ export async function submitContactForm(
     return { success: false, error: parsed.error.errors[0].message };
   }
 
-  await (await getDb()).contactMessage.create({ data: parsed.data });
+  await getDb().contactMessage.create({ data: parsed.data });
   return { success: true };
 }
 
 export async function toggleMessageHandled(id: string): Promise<ActionResult> {
-  const msg = await (await getDb()).contactMessage.findUnique({ where: { id } });
+  const msg = await getDb().contactMessage.findUnique({ where: { id } });
   if (!msg) return { success: false, error: "Message not found" };
 
-  await (await getDb()).contactMessage.update({
+  await getDb().contactMessage.update({
     where: { id },
     data: { isHandled: !msg.isHandled },
   });
@@ -37,6 +37,6 @@ export async function toggleMessageHandled(id: string): Promise<ActionResult> {
 }
 
 export async function deleteMessage(id: string): Promise<ActionResult> {
-  await (await getDb()).contactMessage.delete({ where: { id } });
+  await getDb().contactMessage.delete({ where: { id } });
   return { success: true };
 }

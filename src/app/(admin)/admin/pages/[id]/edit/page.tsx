@@ -12,7 +12,7 @@ interface Props {
 
 export default async function EditPagePage({ params }: Props) {
   const { id } = await params;
-  const page = await (await getDb()).page.findUnique({ where: { id } });
+  const page = await getDb().page.findUnique({ where: { id } });
 
   if (!page) notFound();
 
