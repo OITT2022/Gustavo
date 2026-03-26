@@ -1,0 +1,16 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "gustavo",
+  "compatibility_date": "2025-09-27",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": {
+    "enabled": true
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "gustavo-db",
+      "database_id": "a0d778b8-4b48-4809-90ac-66cc1255fbad"
+    }
+  ]
+}
